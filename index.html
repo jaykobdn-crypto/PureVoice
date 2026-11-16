@@ -1,0 +1,305 @@
+<!doctype html>
+<html lang="ar" dir="rtl"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PureVoice</title>
+<link rel="manifest" href="manifest.webmanifest"><meta name="theme-color" content="#7b3ff2"><link rel="icon" href="icon-192.png"><link rel="apple-touch-icon" href="icon-192.png">
+<style>
+:root{--bg:#f5f2f8;--fg:#1a1620;--card:#fff;--mut:#756d82;--line:#e3dde9;--a1:#7b3ff2;--a2:#ff5d8f;--a3:#ff9a3d;--ok:#12a36b;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#0b0912;--fg:#f5f1fb;--card:#16121f;--mut:#9d93ad;--line:#292234;--ok:#3ddc97}}
+:root[data-theme="dark"]{--bg:#0b0912;--fg:#f5f1fb;--card:#16121f;--mut:#9d93ad;--line:#292234;--ok:#3ddc97}
+html{scroll-padding-top:env(safe-area-inset-top,0px)}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+[hidden]{display:none!important}
+body{margin:0;background:var(--bg);color:var(--fg);font:16px/1.5 system-ui,"Segoe UI",Tahoma,Arial,sans-serif}
+.app{max-width:480px;margin:0 auto;padding:12px 16px 90px;display:flex;flex-direction:column;gap:14px}
+.top{display:flex;justify-content:space-between;align-items:center}
+.brand{font-weight:800;font-size:1.35rem;background:linear-gradient(90deg,var(--a1),var(--a2),var(--a3));-webkit-background-clip:text;background-clip:text;color:transparent}
+.ib{width:42px;height:42px;border-radius:50%;border:0;background:var(--card);color:var(--fg);font-size:1.05rem;cursor:pointer;display:grid;place-items:center;box-shadow:0 0 0 1px var(--line)}
+.hero{border-radius:26px;padding:26px 16px 18px;display:flex;flex-direction:column;align-items:center;gap:10px;background:radial-gradient(120% 90% at 50% 0%,rgba(123,63,242,.28),transparent 70%),var(--card);box-shadow:0 0 0 1px var(--line)}
+.mic{width:128px;height:128px;border-radius:50%;border:0;cursor:pointer;color:#fff;font:800 2.6rem system-ui;display:grid;place-items:center;background:linear-gradient(135deg,var(--a1),var(--a2) 60%,var(--a3));box-shadow:0 14px 34px rgba(123,63,242,.4);position:relative}
+.mic svg{width:58px;height:58px;fill:#fff}
+.mic.on svg{display:none}
+.mic.on{animation:ring 1.1s infinite}
+@keyframes ring{0%{box-shadow:0 0 0 0 rgba(255,93,143,.6)}100%{box-shadow:0 0 0 34px rgba(255,93,143,0)}}
+.bars{display:flex;gap:4px;height:26px;align-items:center}
+.bars i{width:5px;height:6px;border-radius:3px;background:linear-gradient(var(--a1),var(--a2));opacity:.35}
+.on~.bars i,.bars.on i{opacity:1;animation:bar .7s ease-in-out infinite alternate}
+.bars i:nth-child(2n){animation-delay:.15s!important}.bars i:nth-child(3n){animation-delay:.3s!important}
+@keyframes bar{to{height:26px}}
+@media (prefers-reduced-motion:reduce){.mic.on,.bars.on i{animation:none}}
+.hint{color:var(--mut);margin:0;text-align:center;min-height:1.5em}
+.sm{display:flex;gap:10px}
+.sm button{border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:999px;padding:7px 14px;cursor:pointer;font:inherit}
+.lb{font-size:.82rem;color:var(--mut);margin:0 2px 6px;display:flex;align-items:center;gap:6px}
+.i{border:0;background:transparent;color:var(--a1);font-size:1rem;cursor:pointer;padding:0 4px}
+.chips{display:flex;gap:8px;overflow-x:auto;padding-bottom:4px;scroll-snap-type:x proximity}
+.chip{flex:none;scroll-snap-align:start;border:1.5px solid var(--line);background:var(--card);color:var(--fg);border-radius:999px;padding:8px 14px;cursor:pointer;font:inherit;white-space:nowrap}
+.chip[aria-pressed="true"]{border-color:transparent;color:#fff;background:linear-gradient(135deg,var(--a1),var(--a2))}
+.cta{border:0;border-radius:16px;padding:15px;font:inherit;font-weight:700;font-size:1.1rem;color:#fff;cursor:pointer;background:linear-gradient(135deg,var(--a1),var(--a2),var(--a3))}
+.cta:disabled{opacity:.45}
+:focus-visible{outline:2px solid var(--a2);outline-offset:2px}
+details{background:var(--card);border-radius:14px;padding:8px 14px;border:1px solid var(--line)}
+summary{cursor:pointer;color:var(--mut)}
+label{display:flex;justify-content:space-between;align-items:center;gap:10px;margin:10px 0}
+select{background:var(--bg);color:var(--fg);border:1px solid var(--line);border-radius:8px;padding:5px 8px;font:inherit}
+input[type=range]{accent-color:var(--a1)}
+.card{background:var(--card);border:1px solid var(--line);border-radius:18px;padding:14px}
+.ba{display:flex;gap:10px;margin-bottom:12px}
+.ba button{flex:1;border-radius:14px;padding:12px;border:1.5px solid var(--line);background:transparent;color:var(--fg);font:inherit;font-weight:600;cursor:pointer}
+.ba button.g{border-color:var(--ok);color:var(--ok)}
+.row{display:grid;grid-template-columns:96px 1fr 66px;align-items:center;gap:8px;width:100%;border:0;background:transparent;color:var(--fg);font:inherit;padding:7px 0;cursor:pointer;text-align:start}
+.bar{height:10px;border-radius:6px;background:var(--line);overflow:hidden}
+.bar i{display:block;height:100%;background:linear-gradient(90deg,var(--a1),var(--a2));border-radius:6px}
+.gain{text-align:end;font-variant-numeric:tabular-nums;font-weight:700}
+.toast{color:var(--mut);text-align:center;min-height:1.4em;margin:0}
+.rail{position:fixed;inset-inline-end:10px;bottom:calc(24% + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:12px;z-index:5}
+.rail .ib{width:52px;height:52px;box-shadow:0 8px 20px rgba(0,0,0,.22)}
+.rail svg{width:28px;height:28px;fill:url(#ig)}
+.ov{position:fixed;inset:0;background:rgba(0,0,0,.55);display:flex;align-items:flex-end;justify-content:center;z-index:20}
+.sheet{background:var(--card);width:100%;max-width:480px;max-height:82dvh;overflow:auto;border-radius:22px 22px 0 0;padding:16px 16px calc(24px + env(safe-area-inset-bottom,0px))}
+.sheet h3{margin:16px 0 6px;font-size:1rem;color:var(--a1)}
+.def{display:grid;grid-template-columns:34px 1fr;gap:4px 8px;padding:8px 0;border-bottom:1px solid var(--line)}
+.def b{display:block}.def span.d{color:var(--mut);font-size:.92rem}
+.x{float:inline-end}
+.cta2{display:block;width:100%;margin:10px 0;border-radius:14px;padding:13px;border:0;font:inherit;font-weight:700;color:#fff;background:linear-gradient(135deg,#f58529,#dd2a7b,#8134af);cursor:pointer}
+.cta2:disabled{opacity:.4}
+.tabs{position:fixed;inset-inline:0;bottom:0;display:flex;justify-content:center;background:var(--card);border-top:1px solid var(--line);padding:6px 0 calc(6px + env(safe-area-inset-bottom,0px));z-index:6}
+.tabs button{flex:1;max-width:120px;background:transparent;border:0;color:var(--fg);font:inherit;font-size:1.3rem;display:flex;flex-direction:column;align-items:center;cursor:pointer}
+.tabs span{font-size:.7rem;color:var(--mut)}
+.rail{bottom:calc(26% + 60px)!important}
+</style></head><body>
+<svg width="0" height="0" style="position:absolute"><defs><linearGradient id="ig" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#f58529"/><stop offset=".5" stop-color="#dd2a7b"/><stop offset="1" stop-color="#8134af"/></linearGradient></defs></svg>
+<div class="app">
+ <div class="top"><span class="brand" id="brand"></span><span><button class="ib" id="inst" aria-label="install" hidden>📲</button> <button class="ib" id="th" aria-label="theme">🌓</button> <button class="ib" id="nt" aria-label="notifications">🔔</button> <button class="ib" id="gl" aria-label="glossary">📖</button> <button class="ib" id="lg" aria-label="language">EN</button></span></div>
+
+ <p class="lb" style="justify-content:center;text-align:center;direction:ltr;font-style:italic">Etude et analyse d’un algorithme bi-capture à pas variable pour le rehaussement de signal parole dans les systèmes mains libres</p>
+ <div class="hero">
+  <button class="mic" id="mic" aria-label="record"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2z"/></svg><span id="cd"></span></button>
+  <div class="bars" id="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+  <p class="hint" id="hint"></p>
+  <div class="sm"><button id="up"></button><button id="demo"></button></div>
+  <input id="file" type="file" accept="audio/*" hidden>
+ </div>
+
+ <div><p class="lb"><span id="l1"></span><button class="i" data-g="noise" aria-label="info">ⓘ</button></p><div class="chips" id="cn"></div></div>
+ <div><p class="lb"><span id="l2"></span><button class="i" data-g="alg" aria-label="info">ⓘ</button></p><div class="chips" id="ca"></div></div>
+ <details><summary id="l3"></summary>
+  <label><span><span id="l4"></span> <button class="i" data-g="term" aria-label="info">ⓘ</button>: <b id="rv">-3</b> dB</span><input id="rsb" type="range" min="-10" max="10" value="-3"></label>
+  <label><span id="l5"></span><select id="room"><option value="dispersive"></option><option value="sparse"></option></select></label>
+  <label><span>M</span><select id="M"><option>128</option><option>256</option><option>512</option><option>1024</option></select></label>
+ </details>
+ <button class="cta" id="run"></button>
+ <p class="toast" id="toast" role="status"></p>
+ <p class="lb" id="priv" style="justify-content:center;text-align:center"></p>
+
+ <div class="card" id="stt"><p class="lb"><span id="l6"></span></p>
+  <div style="display:flex;gap:8px;align-items:center"><select id="sl"><option value="ar-DZ">العربية</option><option value="en-US">English</option><option value="fr-FR">Français</option></select><button class="chip" id="sb2"></button></div>
+  <textarea id="st2" rows="3" readonly style="width:100%;margin-top:8px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);padding:8px;font:inherit"></textarea></div>
+ <div class="card" id="rs" hidden>
+  <div class="ba"><button id="pb"></button><button id="pa" class="g"></button></div>
+  <div id="rows"></div><div class="ba" style="margin:12px 0 0"><button id="dlw"></button><button id="dlj"></button></div>
+ </div>
+</div>
+
+<div class="rail">
+ <button class="ib" id="msg" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.2 2 11.4c0 2.9 1.4 5.5 3.6 7.2V22l3.3-1.8c.9.2 1.9.4 3.1.4 5.5 0 10-4.2 10-9.4S17.5 2 12 2zm1 12.6l-2.5-2.7-4.9 2.7 5.4-5.7 2.6 2.7 4.8-2.7-5.4 5.7z"/></svg></button>
+ <button class="ib" id="sh" aria-label="share" hidden>⤴</button>
+</div>
+<nav class="tabs"><button data-t="home">🎙️<span data-k="home"></span></button><button data-t="lb">🏆<span data-k="lb"></span></button><button data-t="rooms">🎧<span data-k="rooms"></span></button><button data-t="prof">👤<span data-k="prof"></span></button></nav>
+<div class="ov" id="ov" hidden><div class="sheet" id="sheet"><button class="ib x" id="xx" aria-label="close">✕</button><div id="sb"></div></div></div>
+
+<script>
+const APP_NAME='PureVoice';              /* change the app name here */
+const ADMIN_INSTAGRAM='jaykob_dn';          /* admin Instagram username */
+/* paste your Firebase web config object here to enable Google sign-in, profiles and the leaderboard */
+const FIREBASE_CONFIG=null;
+const LOG_URL='';                           /* Google Apps Script URL for the usage archive */
+const $=id=>document.getElementById(id),FS=8000;
+let lang='ar',src='',speech=null,AC=null,R=null,srcNode=null,mr=null,chunks=[],tick=null,nz='white',al='VFPNLMS';
+const NOISES=[['white','⚪','أبيض','White'],['usasi','📻','USASI','USASI'],['wind','🌬️','ريح','Wind'],['car','🚗','محرك','Engine'],['pink','🌸','وردي','Pink'],['babble','🗣️','أصوات','Voices'],['hum','⚡','طنين','Hum'],['impulse','🔨','ورشة','Workshop'],['mix','🎛️','مزيج','Mixer']];
+const T={ar:{tap:"اضغط على الميكرو وتكلّم",rec:"جارٍ التسجيل… اضغط للإيقاف",up:"📁 ملف",demo:"▶ تجريبي",ln:"اختر الضجيج",la:"اختر الخوارزمية",all:"🏆 الكل",ls:"إعدادات",lr:"RSB",lroom:"الوسط",disp:"منتشر",sparse:"متفرق",run:"✨ نقِّ الصوت",ready:"الصوت جاهز ✓",nosp:"سجّل صوتك أولاً",busy:"جارٍ التنقية…",done:"تمّ ✓",mic:"الميكروفون غير متاح. جرّب 📁 ملف",err:"خطأ، جرّب صوتاً آخر",before:"▶ قبل",after:"▶ بعد",shared:"تمّت المشاركة",home:"الرئيسية",lb:"الترتيب",rooms:"غرف صوتية",prof:"حسابي",needfb:"يحتاج هذا إعداد Firebase (غير مفعّل حالياً).",roomsd:"الغرف الصوتية الجماعية تحتاج خادم صوت مباشر (مثل LiveKit أو Agora). نضيفها في المرحلة القادمة.",signin:"الدخول بحساب Google",signout:"تسجيل الخروج",save:"حفظ",publicnote:"اسمك وصورتك يظهران في الترتيب العام.",createdl:"تاريخ التسجيل",lastl:"آخر دخول",tests:"التجارب",best:"الأفضل",board_b:"أفضل نتيجة",board_t:"الأكثر تجارب",stt:"كلام ← نص (مباشر من الميكروفون)",stt1:"🎤 ابدأ",stt2:"⏹ إيقاف",nosr:"المتصفح لا يدعم التحويل. استعمل Chrome.",mixt:"مزيج الضجيج (نسب %)",dlw:"⬇ الصوت WAV",dlj:"⬇ النتائج CSV",priv:"ℹ️ نحفظ إعداداتك ونتائج التنقية فقط (بدون صوتك) لتحسين التطبيق.",g_noise:"أنواع الضجيج",g_alg:"الخوارزميات (من المذكرة)",g_term:"مصطلحات",igt:"راسلني على إنستغرام",igd:"تابع حسابي أولاً، ثم اضغط «راسلني» لتفتح المحادثة.",igf:"➕ تابعني على إنستغرام",igm:"💬 راسلني"},
+en:{tap:"Tap the mic and speak",rec:"Recording… tap to stop",up:"📁 File",demo:"▶ Demo",ln:"Pick the noise",la:"Pick the algorithm",all:"🏆 All",ls:"Settings",lr:"SNR",lroom:"Room",disp:"Dispersive",sparse:"Sparse",run:"✨ Clean my voice",ready:"Voice ready ✓",nosp:"Record your voice first",busy:"Cleaning…",done:"Done ✓",mic:"Microphone unavailable. Try 📁 File",err:"Error, try another voice",before:"▶ Before",after:"▶ After",shared:"Shared",home:"Home",lb:"Leaderboard",rooms:"Rooms",prof:"Profile",needfb:"This needs a Firebase setup (not enabled yet).",roomsd:"Group voice rooms need a live audio server (such as LiveKit or Agora). We add them in the next phase.",signin:"Sign in with Google",signout:"Sign out",save:"Save",publicnote:"Your name and photo appear on the public leaderboard.",createdl:"Joined",lastl:"Last sign-in",tests:"Tests",best:"Best",board_b:"Best result",board_t:"Most tests",stt:"Speech to text (live from the microphone)",stt1:"🎤 Start",stt2:"⏹ Stop",nosr:"This browser does not support it. Use Chrome.",mixt:"Noise mixer (% levels)",dlw:"⬇ Audio WAV",dlj:"⬇ Results CSV",priv:"ℹ️ We save your settings and cleaning results only (never your voice) to improve the app.",g_noise:"Noise types",g_alg:"Algorithms (from the thesis)",g_term:"Terms",igt:"Message me on Instagram",igd:"Follow my account first, then tap “Message me” to open the chat.",igf:"➕ Follow me on Instagram",igm:"💬 Message me"}};
+/* glossary: [group, icon, title ar, title en, text ar, text en] */
+const G=[
+['noise','⚪','ضجيج أبيض','White noise','صوت «شششش» ثابت يحتوي كل الترددات بنفس القوة، كالتلفاز بلا إشارة.','A constant “shhh” with equal power at every frequency, like a TV with no signal.'],
+['noise','📻','USASI','USASI','ضجيج طيفه يشبه متوسط طيف الكلام البشري، ويُستعمل لاختبار الخوارزميات.','Noise whose spectrum matches average human speech; used to test algorithms.'],
+['noise','🌬️','ريح','Wind','ضجيج منخفض التردد تتغير شدته مع هبّات الريح.','Low-frequency noise that swells and fades with gusts.'],
+['noise','🚗','محرك','Engine','ضجيج منخفض التردد مع طنين المحرك.','Low rumble with the hum of an engine.'],
+['noise','🌸','وردي','Pink','ضجيج تقل طاقته كلما ارتفع التردد، يشبه أصوات الطبيعة.','Noise whose power drops as frequency rises, like natural sounds.'],
+['noise','🗣️','أصوات','Voices','ثرثرة أشخاص في الخلفية (تقريب).','Background chatter (approximation).'],
+['noise','⚡','طنين','Hum','نغمة كهرباء ثابتة 50 Hz مع توافقياتها.','A steady 50 Hz mains tone with its harmonics.'],
+['noise','🔨','ورشة','Workshop','نبضات قصيرة مفاجئة كالطرق.','Short sudden bursts, like hammering.'],
+['alg','1️⃣','LMS','LMS','أبسط مرشح تكيفي: يعدّل معاملاته بخطوة ثابتة لتقليل الخطأ.','Simplest adaptive filter: adjusts its taps with a fixed step to reduce error.'],
+['alg','2️⃣','NLMS','NLMS','LMS مع تطبيع الخطوة بقوة الإشارة، فهو أكثر استقراراً.','LMS with the step normalized by signal power, so it is more stable.'],
+['alg','3️⃣','PNLMS','PNLMS','يعطي كل معامل خطوة مختلفة، ممتاز مع الاستجابات المتفرقة (sparse).','Gives every tap its own step; great for sparse responses.'],
+
+['alg','🔀','FNLMS','FNLMS','NLMS على بنية Forward.','NLMS on the Forward structure.'],
+
+['alg','📉','VFNLMS','VFNLMS','FNLMS بخطوة متغيرة: كبيرة في البداية للسرعة وصغيرة بعدها للدقة.','FNLMS with a variable step: large at first for speed, small later for accuracy.'],
+['alg','🏆','VFPNLMS','VFPNLMS','المقترحة في المذكرة: خطوة متغيرة + بنية تناسبية + كاشف نشاط صوتي (DAV).','The thesis proposal: variable step + proportionate + voice activity detector (DAV).'],
+['term','📊','RSB / SNR','SNR','نسبة قوة الكلام إلى قوة الضجيج بالـ dB. -3 يعني أن الضجيج أقوى من الكلام.','Speech power over noise power in dB. -3 means the noise is stronger than the speech.'],
+['term','🎙️','ميكروفونان','Two mics','الأول قرب المتكلم والثاني قرب الضجيج؛ يستعمل الثاني لمحو الضجيج من الأول.','Mic 1 is near the speaker and mic 2 near the noise; mic 2 is used to cancel noise from mic 1.'],
+['term','🏠','منتشر / متفرق','Dispersive / Sparse','منتشر: أصداء كثيرة على مدى طويل. متفرق: بضع انعكاسات قوية فقط.','Dispersive: many echoes over a long time. Sparse: only a few strong reflections.'],
+['term','🔢','M','M','طول المرشح (عدد معاملاته). الأطول يتتبع أصداء أطول لكنه أبطأ.','Filter length (number of taps). Longer follows longer echoes but is slower.'],
+['term','📈','SM','SM','عدم تطابق النظام: كلما انخفض اقترب المرشح من الاستجابة الحقيقية.','System Mismatch: the lower it is, the closer the filter is to the real response.']];
+const tr=k=>T[lang][k],toast=k=>$('toast').textContent=tr(k);
+function applyLang(){const d=document.documentElement;d.lang=lang;d.dir=lang==='ar'?'rtl':'ltr';$('lg').textContent=lang==='ar'?'EN':'ع';
+ $('brand').textContent=APP_NAME;document.title=APP_NAME;$('hint').textContent=mr&&mr.state==='recording'?tr('rec'):tr('tap');$('up').textContent=tr('up');$('demo').textContent=tr('demo');
+ $('l1').textContent=tr('ln');$('l2').textContent=tr('la');$('l3').textContent='⚙ '+tr('ls');$('l4').textContent=tr('lr');$('l5').textContent=tr('lroom');$('priv').textContent=tr('priv');
+ $('room').options[0].textContent=tr('disp');$('room').options[1].textContent=tr('sparse');$('run').textContent=tr('run');$('pb').textContent=tr('before');$('dlw').textContent=tr('dlw');$('dlj').textContent=tr('dlj');$('l6').textContent=tr('stt');$('sb2').textContent=rec?tr('stt2'):tr('stt1');document.querySelectorAll('[data-k]').forEach(e=>e.textContent=tr(e.dataset.k));
+ chips();if(R)showRes()}
+function chips(){$('cn').innerHTML='';NOISES.forEach(n=>{const b=document.createElement('button');b.className='chip';b.textContent=n[1]+' '+(lang==='ar'?n[2]:n[3]);b.setAttribute('aria-pressed',n[0]===nz);b.onclick=()=>{nz=n[0];if(nz==='mix')openMixer();chips()};$('cn').append(b)});
+ $('ca').innerHTML='';[...KEYS,'ALL'].forEach(k=>{const b=document.createElement('button');b.className='chip';b.textContent=k==='ALL'?tr('all'):k;b.setAttribute('aria-pressed',k===al);b.onclick=()=>{al=k;chips()};$('ca').append(b)})}
+$('lg').onclick=()=>{lang=lang==='ar'?'en':'ar';applyLang()};
+$('rsb').oninput=()=>$('rv').textContent=$('rsb').value;
+function getAC(){if(!AC)AC=new (window.AudioContext||window.webkitAudioContext)();return AC}
+
+/* ---- sheets: glossary and Instagram ---- */
+const el=(t,c,x)=>{const e=document.createElement(t);if(c)e.className=c;if(x!=null)e.textContent=x;return e};
+function openSheet(build,scrollId){$('sb').innerHTML='';build($('sb'));$('ov').hidden=false;if(scrollId){const t=document.getElementById(scrollId);if(t)t.scrollIntoView()}}
+const closeSheet=()=>$('ov').hidden=true;$('xx').onclick=closeSheet;$('ov').onclick=e=>{if(e.target===$('ov'))closeSheet()};
+function glossary(g){openSheet(b=>{['noise','alg','term'].forEach(k=>{const h=el('h3',null,tr('g_'+k));h.id='g_'+k;b.append(h);
+ G.filter(x=>x[0]===k).forEach(x=>{const d=el('div','def'),ic=el('span',null,x[1]),w=el('div');w.append(el('b',null,lang==='ar'?x[2]:x[3]),el('span','d',lang==='ar'?x[4]:x[5]));d.append(ic,w);b.append(d)})})},g?'g_'+g:null)}
+$('gl').onclick=()=>glossary();document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>glossary(b.dataset.g));
+$('msg').onclick=()=>{openSheet(b=>{b.append(el('h3',null,tr('igt')),el('p',null,tr('igd')));
+ let fl=false;try{fl=!!localStorage.getItem('naqaa_f')}catch(e){}const m=el('button','cta2',tr('igm')),f=el('button','cta2',tr('igf'));m.disabled=!fl;
+ f.onclick=()=>{try{localStorage.setItem('naqaa_f','1')}catch(e){}m.disabled=false;window.open('https://www.instagram.com/'+ADMIN_INSTAGRAM,'_blank','noopener')};
+ m.onclick=()=>window.open('https://ig.me/m/'+ADMIN_INSTAGRAM,'_blank','noopener');b.append(f,m)})};
+
+/* ---- voice input ---- */
+function toMono8k(ab){const d=ab.getChannelData(0),q=ab.sampleRate/FS,N=Math.min(Math.floor(d.length/q),FS*4),o=new Float32Array(N);let mx=1e-6;
+ for(let i=0;i<N;i++){const p=i*q,j=Math.floor(p),f=p-j;o[i]=d[j]*(1-f)+(d[j+1]||0)*f;mx=Math.max(mx,Math.abs(o[i]))}
+ for(let i=0;i<N;i++)o[i]*=.8/mx;return o}
+async function loadBlob(b){try{speech=toMono8k(await getAC().decodeAudioData(await b.arrayBuffer()));toast('ready')}catch(e){toast('err')}}
+$('up').onclick=()=>$('file').click();$('file').onchange=e=>{if(e.target.files[0]){src='file';loadBlob(e.target.files[0])}};
+function stopRec(){if(mr&&mr.state==='recording')mr.stop();clearInterval(tick);$('mic').classList.remove('on');$('bars').classList.remove('on');$('cd').textContent='';$('hint').textContent=tr('tap')}
+$('mic').onclick=async()=>{if(mr&&mr.state==='recording')return stopRec();
+ try{getAC();const s=await navigator.mediaDevices.getUserMedia({audio:true});mr=new MediaRecorder(s);chunks=[];
+  mr.ondataavailable=e=>chunks.push(e.data);mr.onstop=()=>{s.getTracks().forEach(t=>t.stop());src='mic';loadBlob(new Blob(chunks))};
+  mr.start();$('mic').classList.add('on');$('bars').classList.add('on');$('hint').textContent=tr('rec');let t=4;$('cd').textContent=t;
+  tick=setInterval(()=>{t--;$('cd').textContent=t;if(t<=0)stopRec()},1000)}catch(e){toast('mic')}};
+$('demo').onclick=()=>{const N=FS*4,o=new Float32Array(N);let ph=0;
+ for(let n=0;n<N;n++){const t=n/FS,f0=120+18*Math.sin(2*Math.PI*.7*t);ph+=2*Math.PI*f0/FS;const env=Math.max(0,Math.sin(2*Math.PI*1.6*t))**.6;let v=0;
+  for(let k=1;k<=14;k++){const f=k*f0;v+=Math.sin(k*ph)/k*(1+2*Math.exp(-(((f-650)/250)**2))+1.2*Math.exp(-(((f-1800)/400)**2)))}o[n]=v*env}
+ let mx=0;for(const v of o)mx=Math.max(mx,Math.abs(v));for(let i=0;i<N;i++)o[i]*=.8/mx;speech=o;src='demo';toast('ready')};
+
+/* ---- simulation and algorithms ---- */
+const rng=s=>()=>(s=(s*1664525+1013904223)>>>0)/4294967296;
+const gauss=r=>Math.sqrt(-2*Math.log(r()+1e-12))*Math.cos(2*Math.PI*r());
+const pw=a=>{let s=0;for(const v of a)s+=v*v;return s/a.length+1e-12};
+function makeH(M,type,r,g){const h=new Float32Array(M);let e=0;
+ for(let i=0;i<M;i++){h[i]=type==='sparse'?(i<16?gauss(r)*Math.exp(-i/5):0):gauss(r)*Math.exp(-4*i/M);e+=h[i]*h[i]}
+ const k=g/Math.sqrt(e);for(let i=0;i<M;i++)h[i]*=k;return h}
+function conv(x,h){const N=x.length,M=h.length,y=new Float32Array(N);
+ for(let n=0;n<N;n++){let a=0;const k=Math.min(M,n+1);for(let i=0;i<k;i++)if(h[i])a+=h[i]*x[n-i];y[n]=a}return y}
+let MIX={white:50,wind:30};
+function makeNoise(N,type,r){if(type==='mix'){const o=new Float32Array(N);if(!Object.values(MIX).some(v=>v>0))MIX.white=50;for(const k in MIX){if(MIX[k]>0){const x=makeNoise(N,k,r),p=Math.sqrt(pw(x));for(let i=0;i<N;i++)o[i]+=MIX[k]/100*x[i]/p}}return o}const b=new Float32Array(N);let p1=0,p2=0,p3=0,lp=0,env=1,envT=1;
+ for(let n=0;n<N;n++){const w=gauss(r),t=2*Math.PI*n/FS;let v=w;
+  if(type==='usasi'){p1=.85*p1+.15*w;p2=.85*p2+.15*p1;v=p2*4}
+  else if(type==='pink'){p1=.99765*p1+w*.099046;p2=.963*p2+w*.2965164;p3=.57*p3+w*1.0526913;v=p1+p2+p3+w*.1848}
+  else if(type==='car'){lp=.97*lp+.03*w;v=lp*6+.6*Math.sin(60*t)+.4*Math.sin(120*t)}
+  else if(type==='wind'){lp=.98*lp+.02*w;v=lp*7*(.6+.4*Math.sin(.4*t+1.3*Math.sin(.05*t)))+w*.05}
+  else if(type==='babble'){if(n%400===0)envT=.2+r()*1.6;env+=.01*(envT-env);p1=.85*p1+.15*w;p2=.85*p2+.15*p1;v=p2*4*env}
+  else if(type==='hum'){v=Math.sin(50*t)+.5*Math.sin(100*t)+.3*Math.sin(150*t)+.1*w}
+  else if(type==='impulse'){v=r()<.003?w*12:w*.05}
+  b[n]=v}return b}
+function makeVad(s){const L=160,v=new Uint8Array(s.length),E=[];
+ for(let i=0;i<s.length;i+=L){let e=0;for(let j=i;j<Math.min(i+L,s.length);j++)e+=s[j]*s[j];E.push(e)}
+ const thr=.1*E.reduce((a,b)=>a+b,0)/E.length;E.forEach((e,k)=>{if(e>thr)v.fill(1,k*L,Math.min((k+1)*L,s.length))});return v}
+/* only the algorithms of the thesis. f: Forward structure (reference = mic 2) else clean noise reference; n: normalized; p: proportionate; v: variable step; d: voice activity detector */
+const ALG={LMS:{},NLMS:{n:1},PNLMS:{n:1,p:1},FNLMS:{f:1,n:1},VFNLMS:{f:1,n:1,v:1},VFPNLMS:{f:1,n:1,p:1,v:1,d:1}},KEYS=Object.keys(ALG);
+const P={mu:.2,mumin:.05,mumax:1,alpha:.9,gamma:.3,beta:0};
+function run(key,c){const a=ALG[key],{m1,s1,n1,vad}=c,X=a.f?c.m2:c.n2,XS=a.f?c.s2:c.z,XN=c.n2,N=m1.length,M=c.M,w=new Float32Array(M),g=new Float32Array(M);
+ const out=new Float32Array(N),oS=new Float32Array(N),oN=new Float32Array(N),sx=pw(X);let lam=P.mumin,eP=0,pe=1e-4,xx=0;
+ for(let n=0;n<N;n++){const k=Math.min(M,n+1);let y=0,ys=0,yn=0;
+  for(let i=0;i<k;i++){const j=n-i;y+=w[i]*X[j];ys+=w[i]*XS[j];yn+=w[i]*XN[j]}
+  const e=m1[n]-y;out[n]=e;oS[n]=s1[n]-ys;oN[n]=n1[n]-yn;
+  xx+=X[n]*X[n];if(n>=M)xx-=X[n-M]*X[n-M];xx=Math.max(xx,0);
+  let mu=P.mu;
+  if(a.v){pe=.99*pe+.01*e*e;lam=P.alpha*lam+P.gamma*e*eP/(pe+1e-9);mu=Math.min(P.mumax,Math.max(P.mumin,lam));if(a.d&&vad[n])mu=P.mumin}
+  eP=e;
+  if(a.p){let l1=0;for(let i=0;i<M;i++)l1+=Math.abs(w[i]);const q=(1-P.beta)/(2*M),b=(1+P.beta)/(2*l1+1e-6);let den=1e-4;
+   for(let i=0;i<k;i++){g[i]=q+b*Math.abs(w[i]);const x=X[n-i];den+=g[i]*x*x}
+   const f=mu*e/den;for(let i=0;i<k;i++)w[i]+=f*g[i]*X[n-i]}
+  else{const f=a.n?mu*e/(xx+1e-4):mu*e/(M*sx);for(let i=0;i<k;i++)w[i]+=f*X[n-i]}}
+ return {out,snr:10*Math.log10(pw(oS)/pw(oN))}}
+function simulate(list){const N=speech.length,r=rng(7),M=+$('M').value,rsb=+$('rsb').value;
+ const h12=makeH(M,$('room').value,r,.3),h21=makeH(M,$('room').value,r,1);
+ let b=makeNoise(N,nz,r);const s1=speech,s2=conv(s1,h12);let n1=conv(b,h21);
+ const k=Math.sqrt(pw(s1)/(pw(n1)*Math.pow(10,rsb/10)));b=b.map(v=>v*k);n1=n1.map(v=>v*k);
+ const m1=new Float32Array(N),m2=new Float32Array(N);for(let i=0;i<N;i++){m1[i]=s1[i]+n1[i];m2[i]=b[i]+s2[i]}
+ const c={m1,m2,s1,s2,n1,n2:b,z:new Float32Array(N),vad:makeVad(s1),M},o={rsb,noisy:m1,alg:{}};
+ list.forEach(q=>o.alg[q]=run(q,c));
+ let mx=0;for(const v of m1)mx=Math.max(mx,Math.abs(v));for(const q of list)for(const v of o.alg[q].out)mx=Math.max(mx,Math.abs(v));o.scale=.85/mx;
+ o.best=list.reduce((a,q)=>o.alg[q].snr>o.alg[a].snr?q:a);return o}
+$('run').onclick=()=>{if(!speech)return toast('nosp');toast('busy');$('run').disabled=true;
+ setTimeout(()=>{try{R=simulate(al==='ALL'?KEYS:[al]);showRes();logRun();toast('done');notify(tr('done'));if(window.pvAfterRun)window.pvAfterRun(R)}catch(e){toast('err')}$('run').disabled=false},40)};
+
+/* ---- theme, notifications, speech-to-text, mixer, downloads, tabs ---- */
+$('th').onclick=()=>{const d=document.documentElement,c=d.dataset.theme||(matchMedia('(prefers-color-scheme:dark)').matches?'dark':'light');d.dataset.theme=c==='dark'?'light':'dark'};
+function notify(m){try{if(Notification.permission==='granted')new Notification(APP_NAME,{body:m})}catch(e){}}
+$('nt').onclick=()=>{try{Notification.requestPermission().then(p=>{$('toast').textContent=p==='granted'?'🔔 ✓':'🔕'})}catch(e){}};
+const SR=window.SpeechRecognition||window.webkitSpeechRecognition;let rec=null;
+$('sb2').onclick=()=>{if(!SR){$('toast').textContent=tr('nosr');return}if(rec){rec.stop();return}
+ rec=new SR();rec.lang=$('sl').value;rec.continuous=true;rec.interimResults=true;let fin='';
+ rec.onresult=e=>{let t='';for(let i=e.resultIndex;i<e.results.length;i++){if(e.results[i].isFinal)fin+=e.results[i][0].transcript+' ';else t+=e.results[i][0].transcript}$('st2').value=fin+t};
+ rec.onend=()=>{rec=null;$('sb2').textContent=tr('stt1')};rec.onerror=()=>{};rec.start();$('sb2').textContent=tr('stt2')};
+function openMixer(){openSheet(b=>{b.append(el('h3',null,tr('mixt')));NOISES.filter(n=>n[0]!=='mix').forEach(n=>{const l=el('label'),s=document.createElement('span'),v=el('b',null,(MIX[n[0]]||0)+'%');s.textContent=n[1]+' '+(lang==='ar'?n[2]:n[3])+': ';s.append(v);const i=document.createElement('input');i.type='range';i.min=0;i.max=100;i.value=MIX[n[0]]||0;i.oninput=()=>{MIX[n[0]]=+i.value;v.textContent=i.value+'%'};l.append(s,i);b.append(l)})})}
+function dl(blob,name){const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;document.body.append(a);a.click();a.remove()}
+$('dlw').onclick=()=>{if(R)dl(wav(R.alg[R.best].out,R.scale),'purevoice-'+R.best+'.wav')};
+$('dlj').onclick=()=>{if(!R)return;const rows=['algorithm,snr_in_db,snr_out_db,gain_db'].concat(Object.keys(R.alg).map(k=>[k,R.rsb,R.alg[k].snr.toFixed(2),(R.alg[k].snr-R.rsb).toFixed(2)].join(',')));dl(new Blob([rows.join('\n')],{type:'text/csv'}),'purevoice-results.csv')};
+const tab=n=>{if(n==='home'){closeSheet();window.scrollTo({top:0,behavior:'smooth'});return}
+ openSheet(b=>{if(n==='rooms'){b.append(el('h3',null,tr('rooms')),el('p',null,tr('roomsd')));return}
+  if(!window.FB){b.append(el('h3',null,tr(n==='lb'?'lb':'prof')),el('p',null,tr('needfb')));return}
+  if(n==='lb')window.FB.board(b);else window.FB.profile(b)})};
+document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
+/* ---- results, playback, sharing, archive ---- */
+function play(a){const ac=getAC();ac.resume();if(srcNode)try{srcNode.stop()}catch(e){}
+ const bf=ac.createBuffer(1,a.length,FS),d=bf.getChannelData(0);for(let i=0;i<a.length;i++)d[i]=a[i]*R.scale;
+ srcNode=ac.createBufferSource();srcNode.buffer=bf;srcNode.connect(ac.destination);srcNode.start()}
+function showRes(){$('rs').hidden=false;$('sh').hidden=!navigator.share;$('pa').textContent=tr('after')+' · '+R.best;
+ $('pb').onclick=()=>play(R.noisy);$('pa').onclick=()=>play(R.alg[R.best].out);
+ const ks=Object.keys(R.alg).sort((a,b)=>R.alg[b].snr-R.alg[a].snr),mx=Math.max(1,...ks.map(k=>R.alg[k].snr-R.rsb));$('rows').innerHTML='';
+ ks.forEach((k,i)=>{const g=R.alg[k].snr-R.rsb,b=el('button','row'),bar=el('span','bar'),f=document.createElement('i');f.style.width=Math.max(3,Math.min(100,g/mx*100))+'%';bar.append(f);
+  b.append(el('span',null,(i===0&&ks.length>1?'★ ':'')+k),bar,el('span','gain',(g>=0?'+':'')+g.toFixed(1)+' dB'));b.onclick=()=>play(R.alg[k].out);$('rows').append(b)})}
+function wav(a,sc){const n=a.length,b=new ArrayBuffer(44+n*2),v=new DataView(b),W=(o,s)=>[...s].forEach((c,i)=>v.setUint8(o+i,c.charCodeAt(0)));
+ W(0,'RIFF');v.setUint32(4,36+n*2,true);W(8,'WAVEfmt ');v.setUint32(16,16,true);v.setUint16(20,1,true);v.setUint16(22,1,true);v.setUint32(24,FS,true);v.setUint32(28,FS*2,true);v.setUint16(32,2,true);v.setUint16(34,16,true);W(36,'data');v.setUint32(40,n*2,true);
+ for(let i=0;i<n;i++)v.setInt16(44+i*2,Math.max(-1,Math.min(1,a[i]*sc))*32767,true);return new Blob([b],{type:'audio/wav'})}
+$('sh').onclick=async()=>{try{const f=new File([wav(R.alg[R.best].out,R.scale)],'naqaa-'+R.best+'.wav',{type:'audio/wav'});
+ if(navigator.canShare&&navigator.canShare({files:[f]}))await navigator.share({files:[f],title:APP_NAME});toast('shared')}catch(e){}};
+function vid(){try{let v=localStorage.getItem('naqaa_id');if(!v){v=Math.random().toString(36).slice(2,10);localStorage.setItem('naqaa_id',v)}return v}catch(e){return 'anon'}}
+function logRun(){if(!LOG_URL)return;try{const o={t:new Date().toISOString(),visitor:vid(),lang,source:src,noise:nz,algo:al,rsb:R.rsb,room:$('room').value,M:+$('M').value,secs:+(speech.length/FS).toFixed(1),best:R.best,gains:Object.fromEntries(Object.keys(R.alg).map(k=>[k,+(R.alg[k].snr-R.rsb).toFixed(1)]))};
+ fetch(LOG_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(o)})}catch(e){}}
+let ip=null;addEventListener('beforeinstallprompt',e=>{e.preventDefault();ip=e;$('inst').hidden=false});
+$('inst').onclick=async()=>{if(ip){ip.prompt();await ip.userChoice;ip=null;$('inst').hidden=true}};
+if('serviceWorker' in navigator&&location.protocol.indexOf('http')===0)navigator.serviceWorker.register('sw.js').catch(()=>{});
+applyLang();
+</script>
+<script type="module">
+if(FIREBASE_CONFIG){try{
+ const B='https://www.gstatic.com/firebasejs/10.12.2/';
+ const [{initializeApp},A,S]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-auth.js'),import(B+'firebase-firestore.js')]);
+ const au=A.getAuth(initializeApp(FIREBASE_CONFIG)),db=S.getFirestore(au.app);let me=null;
+ const ref=u=>S.doc(db,'users',u.uid),fmt=t=>t&&t.toDate?t.toDate().toLocaleString(lang==='ar'?'ar-DZ':'en-GB'):'';
+ A.onAuthStateChanged(au,async u=>{me=u;if(!u)return;try{const s=await S.getDoc(ref(u));
+  if(s.exists())await S.updateDoc(ref(u),{last:S.serverTimestamp()});
+  else await S.setDoc(ref(u),{uid:u.uid,name:u.displayName||'User',photo:u.photoURL||'',created:S.serverTimestamp(),last:S.serverTimestamp(),tests:0,best:0})}catch(e){}});
+ window.pvAfterRun=async R=>{if(!me)return;try{const g=+(R.alg[R.best].snr-R.rsb).toFixed(1),s=await S.getDoc(ref(me));await S.updateDoc(ref(me),{tests:S.increment(1),best:Math.max((s.data()||{}).best||0,g)})}catch(e){}};
+ const img=(u,n)=>{const i=document.createElement('img');i.src=u||`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23999'/%3E%3C/svg%3E`;i.width=i.height=n;i.style.borderRadius='50%';i.style.objectFit='cover';i.alt='';return i};
+ window.FB={
+  async profile(b){if(!me){const x=el('button','cta2',tr('signin'));x.onclick=async()=>{try{await A.signInWithPopup(au,new A.GoogleAuthProvider());tab('prof')}catch(e){}};b.append(el('h3',null,tr('prof')),el('p',null,tr('publicnote')),x);return}
+   const s=await S.getDoc(ref(me)),d=s.data()||{};b.append(el('h3',null,tr('prof')),img(d.photo,72));
+   const nm=document.createElement('input');nm.value=d.name||'';nm.style.cssText='width:100%;margin:8px 0;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:inherit';
+   const ph=document.createElement('input');ph.type='file';ph.accept='image/*';
+   const sv=el('button','cta2',tr('save'));sv.onclick=async()=>{try{let p=d.photo||'';const f=ph.files[0];
+     if(f){const im=await createImageBitmap(f),c=document.createElement('canvas');c.width=c.height=96;c.getContext('2d').drawImage(im,0,0,96,96);p=c.toDataURL('image/jpeg',.8)}
+     await S.updateDoc(ref(me),{name:nm.value.trim()||d.name,photo:p});tab('prof')}catch(e){}};
+   b.append(nm,ph,sv,el('p','lb',me.email||''),el('p','lb','ID: '+me.uid),el('p','lb',tr('createdl')+': '+fmt(d.created)),el('p','lb',tr('lastl')+': '+fmt(d.last)),el('p','lb',tr('tests')+': '+(d.tests||0)+' · '+tr('best')+': '+(d.best||0)+' dB'));
+   const o=el('button','cta2',tr('signout'));o.onclick=async()=>{await A.signOut(au);tab('prof')};b.append(o)},
+  async board(b,f='best'){b.append(el('h3',null,tr('lb')));const bar=el('div','ba');
+   [['best','board_b'],['tests','board_t']].forEach(([k,t])=>{const x=el('button',k===f?'g':'',tr(t));x.onclick=()=>{b.innerHTML='';window.FB.board(b,k)};bar.append(x)});b.append(bar);
+   try{const q=await S.getDocs(S.query(S.collection(db,'users'),S.orderBy(f,'desc'),S.limit(20)));let i=0;
+    q.forEach(s=>{const d=s.data(),r=el('div','def');r.style.gridTemplateColumns='28px 40px 1fr';r.append(el('b',null,++i),img(d.photo,36));const w=el('div');w.append(el('b',null,d.name||'User'),el('span','d',(d.tests||0)+' · '+(d.best||0)+' dB'));r.append(w);b.append(r)})}catch(e){b.append(el('p',null,tr('needfb')))}}
+ };
+}catch(e){}}
+</script></body></html>
