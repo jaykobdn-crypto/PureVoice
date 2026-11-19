@@ -75,12 +75,19 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-grad
 .gate h2{margin:0 0 10px}.gate p{color:var(--mut)}
 .foot{display:flex;gap:14px;justify-content:center;font-size:.85rem}.foot a{color:var(--mut)}
 #fb select,#fb textarea{width:100%;margin-top:8px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);padding:8px;font:inherit}
+.mic{width:184px;height:184px;border-radius:50%;background:url(dish.jpg) center/cover;border:3px solid rgba(255,255,255,.85);text-shadow:0 2px 8px #000}
+.mic svg{display:none}
+.mic::after{content:"🎙️";position:absolute;bottom:6px;inset-inline-end:6px;width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--a1),var(--a2));display:grid;place-items:center;font-size:1.2rem;border:2px solid var(--card)}
+.sym{display:flex;gap:14px;justify-content:center;font-size:1.3rem;opacity:.9}
+.gate{background:linear-gradient(rgba(11,9,18,.5),rgba(11,9,18,.88)),url(hero.jpg) center 60%/cover}
+.gate .sym{margin-bottom:10px;font-size:1.6rem}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="ig" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#f58529"/><stop offset=".5" stop-color="#dd2a7b"/><stop offset="1" stop-color="#8134af"/></linearGradient></defs></svg>
 <div class="app">
  <div class="top"><span class="brand" id="brand"></span><span><button class="ib" id="inst" aria-label="install" hidden>📲</button> <button class="ib" id="th" aria-label="theme">🌓</button> <button class="ib" id="gl" aria-label="glossary">📖</button> <button class="ib" id="lg" aria-label="language">EN</button></span></div>
 
  <p class="lb" style="justify-content:center;text-align:center;direction:ltr;font-style:italic">Etude et analyse d’un algorithme bi-capture à pas variable pour le rehaussement de signal parole dans les systèmes mains libres</p>
+ <div class="sym" aria-hidden="true">📡 🛰️ 📶 🗼 📻 🎧 🎙️</div>
  <a class="ad" id="ad" target="_blank" rel="noopener"><span class="tag" id="adt"></span><span id="adx"></span></a>
  <div class="hero">
   <button class="mic" id="mic" aria-label="record"><svg viewBox="0 0 24 24"><path d="M12 14a3 3 0 0 0 3-3V6a3 3 0 0 0-6 0v5a3 3 0 0 0 3 3zm5-3a5 5 0 0 1-10 0H5a7 7 0 0 0 6 6.9V21h2v-3.1A7 7 0 0 0 19 11h-2z"/></svg><span id="cd"></span></button>
@@ -113,8 +120,8 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-grad
  <button class="ib" id="msg" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.2 2 11.4c0 2.9 1.4 5.5 3.6 7.2V22l3.3-1.8c.9.2 1.9.4 3.1.4 5.5 0 10-4.2 10-9.4S17.5 2 12 2zm1 12.6l-2.5-2.7-4.9 2.7 5.4-5.7 2.6 2.7 4.8-2.7-5.4 5.7z"/></svg></button>
  <button class="ib" id="sh" aria-label="share" hidden>⤴</button>
 </div>
-<div class="gate" id="gate" hidden><div><h2 id="gt"></h2><p id="gd"></p><ul id="gl" style="margin:0 0 10px;padding-inline-start:1.2em;line-height:1.9"></ul><p class="lb" id="gp"></p><button class="cta" id="ga" style="width:100%"></button></div></div>
-<nav class="tabs"><button data-t="home">🎙️<span data-k="home"></span></button><button data-t="lb">🏆<span data-k="lb"></span></button><button data-t="rooms">🎧<span data-k="rooms"></span></button><button data-t="prof">👤<span data-k="prof"></span></button></nav>
+<div class="gate" id="gate" hidden><div><div class="sym" aria-hidden="true">📡 🛰️ 📶 🗼 📻 🎧</div><h2 id="gt"></h2><p id="gd"></p><ul id="gl" style="margin:0 0 10px;padding-inline-start:1.2em;line-height:1.9"></ul><p class="lb" id="gp"></p><button class="cta" id="ga" style="width:100%"></button></div></div>
+<nav class="tabs"><button data-t="home">🎙️<span data-k="home"></span></button><button data-t="lb">🏆<span data-k="lb"></span></button><button data-t="rooms">🎧<span data-k="rooms"></span></button><button data-t="prof">👤<span data-k="prof"></span></button><button data-t="adm" id="tadm" hidden>👑<span data-k="adm"></span></button></nav>
 <div class="ov" id="ov" hidden><div class="sheet" id="sheet"><button class="ib x" id="xx" aria-label="close">✕</button><div id="sb"></div></div></div>
 
 <script>
@@ -122,12 +129,14 @@ const APP_NAME='PureVoice';              /* change the app name here */
 const ADMIN_INSTAGRAM='jaykob_dn';          /* admin Instagram username */
 /* paste your Firebase web config object here to enable Google sign-in, profiles and the leaderboard */
 const FIREBASE_CONFIG=null;
+/* the admin's Google email: only this account sees the admin tab (also enforce it in the Firestore rules) */
+const ADMIN_EMAIL='';
 const LOG_URL='';                           /* Google Apps Script URL for the usage archive */
 const $=id=>document.getElementById(id),FS=8000;
 let lang='ar',src='',speech=null,AC=null,R=null,srcNode=null,mr=null,chunks=[],tick=null,nz='white',al='VFPNLMS';
 const NOISES=[['white','⚪','أبيض','White'],['usasi','📻','USASI','USASI'],['wind','🌬️','ريح','Wind'],['car','🚗','محرك','Engine'],['pink','🌸','وردي','Pink'],['babble','🗣️','أصوات','Voices'],['hum','⚡','طنين','Hum'],['impulse','🔨','ورشة','Workshop'],['mix','🎛️','مزيج','Mixer']];
-const T={ar:{tap:"اضغط على الميكرو وتكلّم",rec:"جارٍ التسجيل… اضغط للإيقاف",up:"📁 ملف",demo:"▶ تجريبي",ln:"اختر الضجيج",la:"اختر الخوارزمية",all:"🏆 الكل",ls:"إعدادات",lr:"RSB",lroom:"الوسط",disp:"منتشر",sparse:"متفرق",run:"✨ نقِّ الصوت",ready:"الصوت جاهز ✓",nosp:"سجّل صوتك أولاً",busy:"جارٍ التنقية…",done:"تمّ ✓",mic:"الميكروفون غير متاح. جرّب 📁 ملف",err:"خطأ، جرّب صوتاً آخر",before:"▶ قبل",after:"▶ بعد",shared:"تمّت المشاركة",home:"الرئيسية",gt:"مرحباً 👋",gd:"في هذا التطبيق سنطبّق عدة خوارزميات تكيفية لإزالة الضجيج من صوتك: LMS وNLMS وPNLMS وFNLMS وVFNLMS وVFPNLMS، ثم نقارن بينها لنرى أيها أنقى، وخصوصاً الخوارزمية المقترحة VFPNLMS ذات الخطوة المتغيرة.",gl:[],gp:"",ga:"ابدأ ✨",fq:"💬 رأيك: أي خوارزمية قدّمت أداءً أفضل في رأيك، وما الإعدادات التي اخترتها؟ (الأرقام تُسجَّل تلقائياً)",fph:"اكتب رأيك هنا…",fs:"إرسال للمشرف",fpick:"أفضل خوارزمية في رأيك",fneed:"اختر خوارزمية أو اكتب تعليقاً.",fok:"وصلت رسالتك ✓",fnolog:"الإرسال غير مفعّل بعد.",pp:"سياسة الخصوصية",wd:"سحب الموافقة",lb:"الترتيب",rooms:"غرف صوتية",prof:"حسابي",needfb:"يحتاج هذا إعداد Firebase (غير مفعّل حالياً).",roomsd:"الغرف الصوتية الجماعية تحتاج خادم صوت مباشر (مثل LiveKit أو Agora). نضيفها في المرحلة القادمة.",signin:"الدخول بحساب Google",signout:"تسجيل الخروج",save:"حفظ",publicnote:"اسمك وصورتك يظهران في الترتيب العام.",createdl:"تاريخ التسجيل",lastl:"آخر دخول",tests:"التجارب",best:"الأفضل",board_b:"أفضل نتيجة",board_t:"الأكثر تجارب",stt:"كلام ← نص (مباشر من الميكروفون)",stt1:"🎤 ابدأ",stt2:"⏹ إيقاف",nosr:"المتصفح لا يدعم التحويل. استعمل Chrome.",mixt:"مزيج الضجيج (نسب %)",dlw:"⬇ الصوت WAV",dlj:"⬇ النتائج CSV",priv:"ℹ️ نحفظ تسجيلك وإعداداتك ونتائجك لأغراض البحث وتحسين التطبيق (سياسة الخصوصية أسفل الصفحة).",g_noise:"أنواع الضجيج",g_alg:"الخوارزميات (من المذكرة)",g_term:"مصطلحات",igt:"راسلني على إنستغرام",igd:"🔒 المراسلة مقفلة حتى تتابع حسابي: 1) اضغط «تابعني»  2) ثم اضغط «راسلني».",igf:"➕ تابعني على إنستغرام",igm:"💬 راسلني"},
-en:{tap:"Tap the mic and speak",rec:"Recording… tap to stop",up:"📁 File",demo:"▶ Demo",ln:"Pick the noise",la:"Pick the algorithm",all:"🏆 All",ls:"Settings",lr:"SNR",lroom:"Room",disp:"Dispersive",sparse:"Sparse",run:"✨ Clean my voice",ready:"Voice ready ✓",nosp:"Record your voice first",busy:"Cleaning…",done:"Done ✓",mic:"Microphone unavailable. Try 📁 File",err:"Error, try another voice",before:"▶ Before",after:"▶ After",shared:"Shared",home:"Home",gt:"Welcome 👋",gd:"In this app we apply several adaptive algorithms to remove noise from your voice: LMS, NLMS, PNLMS, FNLMS, VFNLMS and VFPNLMS, then compare them to see which is cleanest, especially the proposed variable-step VFPNLMS.",gl:[],gp:"",ga:"Start ✨",fq:"💬 Your opinion: which algorithm performed best in your view, and which settings did you choose? (the numbers are recorded automatically)",fph:"Write your opinion here…",fs:"Send to the admin",fpick:"Best algorithm in your view",fneed:"Pick an algorithm or write a comment.",fok:"Your message arrived ✓",fnolog:"Sending is not enabled yet.",pp:"Privacy policy",wd:"Withdraw consent",lb:"Leaderboard",rooms:"Rooms",prof:"Profile",needfb:"This needs a Firebase setup (not enabled yet).",roomsd:"Group voice rooms need a live audio server (such as LiveKit or Agora). We add them in the next phase.",signin:"Sign in with Google",signout:"Sign out",save:"Save",publicnote:"Your name and photo appear on the public leaderboard.",createdl:"Joined",lastl:"Last sign-in",tests:"Tests",best:"Best",board_b:"Best result",board_t:"Most tests",stt:"Speech to text (live from the microphone)",stt1:"🎤 Start",stt2:"⏹ Stop",nosr:"This browser does not support it. Use Chrome.",mixt:"Noise mixer (% levels)",dlw:"⬇ Audio WAV",dlj:"⬇ Results CSV",priv:"ℹ️ We save your recording, settings and results for research and to improve the app (privacy policy at the bottom of the page).",g_noise:"Noise types",g_alg:"Algorithms (from the thesis)",g_term:"Terms",igt:"Message me on Instagram",igd:"🔒 Messaging is locked until you follow my account: 1) tap “Follow me”  2) then tap “Message me”.",igf:"➕ Follow me on Instagram",igm:"💬 Message me"}};
+const T={ar:{tap:"اضغط على الميكرو وتكلّم",rec:"جارٍ التسجيل… اضغط للإيقاف",up:"📁 ملف",demo:"▶ تجريبي",ln:"اختر الضجيج",la:"اختر الخوارزمية",all:"🏆 الكل",ls:"إعدادات",lr:"RSB",lroom:"الوسط",disp:"منتشر",sparse:"متفرق",run:"✨ نقِّ الصوت",ready:"الصوت جاهز ✓",nosp:"سجّل صوتك أولاً",busy:"جارٍ التنقية…",done:"تمّ ✓",mic:"الميكروفون غير متاح. جرّب 📁 ملف",err:"خطأ، جرّب صوتاً آخر",before:"▶ قبل",after:"▶ بعد",shared:"تمّت المشاركة",home:"الرئيسية",adm:"المشرف",gt:"مرحباً 👋",gd:"في هذا التطبيق سنطبّق عدة خوارزميات لتحسين جودة الصوت وإزالة الضجيج، ثم نقارن بينها لنعرف أيها الأفضل، خاصة الخوارزمية المقترحة VFPNLMS.",gl:[],gp:"",ga:"بدء",fq:"💬 رأيك: أي خوارزمية قدّمت أداءً أفضل في رأيك، وما الإعدادات التي اخترتها؟ (الأرقام تُسجَّل تلقائياً)",fph:"اكتب رأيك هنا…",fs:"إرسال للمشرف",fpick:"أفضل خوارزمية في رأيك",fneed:"اختر خوارزمية أو اكتب تعليقاً.",fok:"وصلت رسالتك ✓",fnolog:"الإرسال غير مفعّل بعد.",pp:"سياسة الخصوصية",wd:"سحب الموافقة",lb:"الترتيب",rooms:"غرف صوتية",prof:"حسابي",needfb:"يحتاج هذا إعداد Firebase (غير مفعّل حالياً).",roomsd:"الغرف الصوتية الجماعية تحتاج خادم صوت مباشر (مثل LiveKit أو Agora). نضيفها في المرحلة القادمة.",signin:"الدخول بحساب Google",signout:"تسجيل الخروج",save:"حفظ",publicnote:"اسمك وصورتك يظهران في الترتيب العام.",createdl:"تاريخ التسجيل",lastl:"آخر دخول",tests:"التجارب",best:"الأفضل",board_b:"أفضل نتيجة",board_t:"الأكثر تجارب",stt:"كلام ← نص (مباشر من الميكروفون)",stt1:"🎤 ابدأ",stt2:"⏹ إيقاف",nosr:"المتصفح لا يدعم التحويل. استعمل Chrome.",mixt:"مزيج الضجيج (نسب %)",dlw:"⬇ الصوت WAV",dlj:"⬇ النتائج CSV",priv:"",g_noise:"أنواع الضجيج",g_alg:"الخوارزميات (من المذكرة)",g_term:"مصطلحات",igt:"راسلني على إنستغرام",igd:"🔒 المراسلة مقفلة حتى تتابع حسابي: 1) اضغط «تابعني»  2) ثم اضغط «راسلني».",igf:"➕ تابعني على إنستغرام",igm:"💬 راسلني"},
+en:{tap:"Tap the mic and speak",rec:"Recording… tap to stop",up:"📁 File",demo:"▶ Demo",ln:"Pick the noise",la:"Pick the algorithm",all:"🏆 All",ls:"Settings",lr:"SNR",lroom:"Room",disp:"Dispersive",sparse:"Sparse",run:"✨ Clean my voice",ready:"Voice ready ✓",nosp:"Record your voice first",busy:"Cleaning…",done:"Done ✓",mic:"Microphone unavailable. Try 📁 File",err:"Error, try another voice",before:"▶ Before",after:"▶ After",shared:"Shared",home:"Home",adm:"Admin",gt:"Welcome 👋",gd:"In this app we apply several algorithms to improve voice quality and remove noise, then compare them to find the best one, especially the proposed VFPNLMS.",gl:[],gp:"",ga:"Start",fq:"💬 Your opinion: which algorithm performed best in your view, and which settings did you choose? (the numbers are recorded automatically)",fph:"Write your opinion here…",fs:"Send to the admin",fpick:"Best algorithm in your view",fneed:"Pick an algorithm or write a comment.",fok:"Your message arrived ✓",fnolog:"Sending is not enabled yet.",pp:"Privacy policy",wd:"Withdraw consent",lb:"Leaderboard",rooms:"Rooms",prof:"Profile",needfb:"This needs a Firebase setup (not enabled yet).",roomsd:"Group voice rooms need a live audio server (such as LiveKit or Agora). We add them in the next phase.",signin:"Sign in with Google",signout:"Sign out",save:"Save",publicnote:"Your name and photo appear on the public leaderboard.",createdl:"Joined",lastl:"Last sign-in",tests:"Tests",best:"Best",board_b:"Best result",board_t:"Most tests",stt:"Speech to text (live from the microphone)",stt1:"🎤 Start",stt2:"⏹ Stop",nosr:"This browser does not support it. Use Chrome.",mixt:"Noise mixer (% levels)",dlw:"⬇ Audio WAV",dlj:"⬇ Results CSV",priv:"",g_noise:"Noise types",g_alg:"Algorithms (from the thesis)",g_term:"Terms",igt:"Message me on Instagram",igd:"🔒 Messaging is locked until you follow my account: 1) tap “Follow me”  2) then tap “Message me”.",igf:"➕ Follow me on Instagram",igm:"💬 Message me"}};
 /* glossary: [group, icon, title ar, title en, text ar, text en] */
 const G=[
 ['noise','⚪','ضجيج أبيض','White noise','صوت «شششش» ثابت يحتوي كل الترددات بنفس القوة، كالتلفاز بلا إشارة.','A constant “shhh” with equal power at every frequency, like a TV with no signal.'],
@@ -170,7 +179,7 @@ const closeSheet=()=>$('ov').hidden=true;$('xx').onclick=closeSheet;$('ov').oncl
 function glossary(g){openSheet(b=>{['noise','alg','term'].forEach(k=>{const h=el('h3',null,tr('g_'+k));h.id='g_'+k;b.append(h);
  G.filter(x=>x[0]===k).forEach(x=>{const d=el('div','def'),ic=el('span',null,x[1]),w=el('div');w.append(el('b',null,lang==='ar'?x[2]:x[3]),el('span','d',lang==='ar'?x[4]:x[5]));d.append(ic,w);b.append(d)})})},g?'g_'+g:null)}
 $('gl').onclick=()=>glossary();document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>glossary(b.dataset.g));
-$('msg').onclick=()=>{openSheet(b=>{b.append(el('h3',null,tr('igt')),el('p',null,tr('igd')));
+$('msg').onclick=()=>{openSheet(b=>{b.append(el('h3',null,tr('igt')));
  let fl=false;try{fl=!!localStorage.getItem('naqaa_f')}catch(e){}const m=el('button','cta2',tr('igm')),f=el('button','cta2',tr('igf'));m.disabled=!fl;if(!fl)m.textContent='🔒 '+tr('igm');
  f.onclick=()=>{try{localStorage.setItem('naqaa_f','1')}catch(e){}m.disabled=false;m.textContent=tr('igm');window.open('https://www.instagram.com/'+ADMIN_INSTAGRAM,'_blank','noopener')};
  m.onclick=()=>window.open('https://ig.me/m/'+ADMIN_INSTAGRAM,'_blank','noopener');b.append(f,m)})};
@@ -254,13 +263,13 @@ $('dlj').onclick=()=>{if(!R)return;const rows=['algorithm,snr_in_db,snr_out_db,g
 const tab=n=>{if(n==='home'){closeSheet();window.scrollTo({top:0,behavior:'smooth'});return}
  openSheet(b=>{if(n==='rooms'){roomsUI(b);return}
   if(!window.FB){b.append(el('h3',null,tr(n==='lb'?'lb':'prof')),el('p',null,tr('needfb')));return}
-  if(n==='lb')window.FB.board(b);else window.FB.profile(b)})};
+  if(n==='lb')window.FB.board(b);else if(n==='adm')window.FB.admin(b);else window.FB.profile(b)})};
 document.querySelectorAll('.tabs button').forEach(b=>b.onclick=()=>tab(b.dataset.t));
 /* ---- consent, ads, archive, feedback ---- */
 const CONSENT_KEY='pv_consent_v1';let CONS=false;
 function hasConsent(){if(CONS)return true;try{return localStorage.getItem(CONSENT_KEY)==='1'}catch(e){return false}}
 function gate(){$('gate').hidden=hasConsent()}
-$('ga').onclick=()=>{CONS=true;try{localStorage.setItem(CONSENT_KEY,'1')}catch(e){}gate()};
+$('ga').onclick=()=>{CONS=true;try{localStorage.setItem(CONSENT_KEY,'1')}catch(e){}gate();if(window.pvEnsureLogin)window.pvEnsureLogin()};
 $('wd').onclick=e=>{e.preventDefault();CONS=false;try{localStorage.removeItem(CONSENT_KEY)}catch(e2){}gate()};
 const ADS=[{ar:'🎓 مشروع تخرج: تنقية الكلام بالخوارزمية VFPNLMS',en:'🎓 Graduation project: speech cleaning with VFPNLMS',url:''}];let ai=0;
 function showAd(){const a=ADS[ai%ADS.length];$('adt').textContent=lang==='ar'?'إعلان':'Ad';$('adx').textContent=a[lang];if(a.url)$('ad').href=a.url;else $('ad').removeAttribute('href')}
@@ -268,13 +277,13 @@ setInterval(()=>{ai++;showAd()},6000);
 function ui2(){['gt','gd','ga','gp','fq','fs','pp','wd'].forEach(k=>$(k).textContent=tr(k));const ul=$('gl');ul.innerHTML='';tr('gl').forEach(x=>{const li=document.createElement('li');li.textContent=x;ul.append(li)});$('ft').placeholder=tr('fph');
  const sel=$('fa'),cur=sel.value;sel.innerHTML='<option value="">'+tr('fpick')+'</option>'+KEYS.map(k=>'<option>'+k+'</option>').join('');sel.value=cur;gate()}
 async function audio64(){const v=new Uint8Array(await wav(speech,1).arrayBuffer());let t='';for(let i=0;i<v.length;i+=8192)t+=String.fromCharCode.apply(null,v.subarray(i,i+8192));return btoa(t)}
-async function archive(type,extra){if(!LOG_URL||!hasConsent())return false;
+async function archive(type,extra){if((!LOG_URL&&!window.pvArchive)||!hasConsent())return false;
  try{const w=window.pvWho?window.pvWho():null,g=k=>R?Object.fromEntries(Object.keys(R.alg).map(a=>[a,+k(R.alg[a]).toFixed(1)])):null;
   const o=Object.assign({type,t:new Date().toISOString(),visitor:vid(),user:w,lang,source:src,noise:nz,mix:nz==='mix'?MIX:null,algo:al,rsb:R?R.rsb:+$('rsb').value,room:$('room').value,M:+$('M').value,secs:speech?+(speech.length/FS).toFixed(1):0,best:R?R.best:'',snr_out:g(x=>x.snr),gains:R?g(x=>x.snr-R.rsb):null},extra||{});
   if(type==='run'&&speech)o.audio=await audio64();
-  fetch(LOG_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(o)});return true}catch(e){return false}}
+  if(window.pvArchive)window.pvArchive(o);if(LOG_URL)fetch(LOG_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(o)});return true}catch(e){return false}}
 $('fs').onclick=async()=>{const c=$('ft').value.trim(),p=$('fa').value;if(!c&&!p){$('fm').textContent=tr('fneed');return}
- if(!LOG_URL){$('fm').textContent=tr('fnolog');return}
+ if(!LOG_URL&&!window.pvArchive){$('fm').textContent=tr('fnolog');return}
  await archive('feedback',{pick:p,comment:c});$('ft').value='';$('fm').textContent=tr('fok')};
 /* ---- voice rooms: small peer-to-peer groups (experimental) ---- */
 const L=(a,e)=>lang==='ar'?a:e;let PEER=null,LOCAL=null;
@@ -327,14 +336,32 @@ if(FIREBASE_CONFIG){try{
  const [{initializeApp},A,S]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-auth.js'),import(B+'firebase-firestore.js')]);
  const au=A.getAuth(initializeApp(FIREBASE_CONFIG)),db=S.getFirestore(au.app);let me=null;
  const ref=u=>S.doc(db,'users',u.uid),fmt=t=>t&&t.toDate?t.toDate().toLocaleString(lang==='ar'?'ar-DZ':'en-GB'):'';
- A.onAuthStateChanged(au,async u=>{me=u;if(!u)return;try{const s=await S.getDoc(ref(u));
-  if(s.exists())await S.updateDoc(ref(u),{last:S.serverTimestamp()});
-  else await S.setDoc(ref(u),{uid:u.uid,name:u.displayName||'User',photo:u.photoURL||'',created:S.serverTimestamp(),last:S.serverTimestamp(),tests:0,best:0})}catch(e){}});
- window.pvAfterRun=async R=>{if(!me)return;try{const g=+(R.alg[R.best].snr-R.rsb).toFixed(1),s=await S.getDoc(ref(me));await S.updateDoc(ref(me),{tests:S.increment(1),best:Math.max((s.data()||{}).best||0,g)})}catch(e){}};
- const img=(u,n)=>{const i=document.createElement('img');i.src=u||`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23999'/%3E%3C/svg%3E`;i.width=i.height=n;i.style.borderRadius='50%';i.style.objectFit='cover';i.alt='';return i};
+ const isAdmin=()=>!!me&&!!ADMIN_EMAIL&&me.email===ADMIN_EMAIL,tadm=()=>document.getElementById('tadm');
+ const inp=(ph,type)=>{const i=document.createElement('input');i.placeholder=ph;i.type=type||'text';i.style.cssText='width:100%;margin:6px 0;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:inherit';return i};
+ function openAccount(){if(document.getElementById('acct'))return;const ov=el('div','gate'),box=el('div');ov.id='acct';ov.append(box);
+  box.append(el('h2',null,L('افتح حسابك','Open your account')),el('p',null,L('سجّل الدخول للمتابعة','Sign in to continue')));
+  const err=el('p','toast',''),go=p=>async()=>{try{await A.signInWithPopup(au,p())}catch(e){err.textContent=e.code||'error'}};
+  const g=el('button','cta2',L('الدخول بـ Google','Continue with Google')),f=el('button','cta2',L('الدخول بـ Facebook','Continue with Facebook'));
+  g.onclick=go(()=>new A.GoogleAuthProvider());f.onclick=go(()=>new A.FacebookAuthProvider());
+  const nm=inp(L('الاسم','Name')),em=inp('Email','email'),pw=inp(L('كلمة السر (6 أحرف فأكثر)','Password (6+ characters)'),'password');
+  const cr=el('button','cta2',L('إنشاء حساب','Create account')),si=el('button','chip',L('لدي حساب: دخول','I have an account: sign in'));si.style.cssText='width:100%;margin-top:6px';
+  cr.onclick=async()=>{try{const c=await A.createUserWithEmailAndPassword(au,em.value.trim(),pw.value);if(nm.value.trim())await A.updateProfile(c.user,{displayName:nm.value.trim()})}catch(e){err.textContent=e.code||'error'}};
+  si.onclick=async()=>{try{await A.signInWithEmailAndPassword(au,em.value.trim(),pw.value)}catch(e){err.textContent=e.code||'error'}};
+  const pv=document.createElement('a');pv.href='privacy.html';pv.textContent=L('بمتابعتك توافق على سياسة الخصوصية (تسجيلاتك ونتائجك تُحفظ لأغراض البحث)','By continuing you accept the privacy policy (your recordings and results are saved for research)');pv.style.cssText='display:block;margin-top:12px;font-size:.8rem;color:var(--mut)';
+  box.append(g,f,nm,em,pw,cr,si,err,pv);document.body.append(ov)}
+ async function badge(){try{const q=await S.getDocs(S.query(S.collection(db,'submissions'),S.orderBy('ts','desc'),S.limit(50)));const seen=+localStorage.getItem('pv_seen')||0;let n=0;q.forEach(d=>{const t=d.data().ts;if(t&&t.toMillis&&t.toMillis()>seen)n++});const b=document.querySelector('#tadm span');if(b)b.textContent=n?'('+n+')':tr('adm')}catch(e){}}
+ A.onAuthStateChanged(au,async u=>{me=u;const ac=document.getElementById('acct');
+  if(u){if(ac)ac.remove();try{const s=await S.getDoc(ref(u));if(s.exists())await S.updateDoc(ref(u),{last:S.serverTimestamp()});
+    else await S.setDoc(ref(u),{uid:u.uid,name:u.displayName||(u.email||'').split('@')[0]||'User',photo:u.photoURL||'',created:S.serverTimestamp(),last:S.serverTimestamp(),tests:0,best:0})}catch(e){}
+   tadm().hidden=!isAdmin();if(isAdmin())badge()}
+  else{tadm().hidden=true;if(hasConsent())openAccount()}});
+ window.pvEnsureLogin=()=>{if(!me)openAccount()};
  window.pvWho=()=>me?{uid:me.uid,name:me.displayName||'',email:me.email||''}:null;
+ window.pvAfterRun=async R=>{if(!me)return;try{const g=+(R.alg[R.best].snr-R.rsb).toFixed(1),s=await S.getDoc(ref(me));await S.updateDoc(ref(me),{tests:S.increment(1),best:Math.max((s.data()||{}).best||0,g)})}catch(e){}};
+ window.pvArchive=async o=>{if(!me)return;try{await S.addDoc(S.collection(db,'submissions'),Object.assign({},o,{uid:me.uid,name:me.displayName||'',email:me.email||'',ts:S.serverTimestamp()}))}catch(e){}};
+ const img=(u,n)=>{const i=document.createElement('img');i.src=u||`data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 40 40'%3E%3Ccircle cx='20' cy='20' r='20' fill='%23999'/%3E%3C/svg%3E`;i.width=i.height=n;i.style.borderRadius='50%';i.style.objectFit='cover';i.alt='';return i};
  window.FB={
-  async profile(b){if(!me){const x=el('button','cta2',tr('signin'));x.onclick=async()=>{try{await A.signInWithPopup(au,new A.GoogleAuthProvider());tab('prof')}catch(e){}};b.append(el('h3',null,tr('prof')),el('p',null,tr('publicnote')),x);return}
+  async profile(b){if(!me){b.append(el('h3',null,tr('prof')));const x=el('button','cta2',tr('signin'));x.onclick=()=>{closeSheet();openAccount()};b.append(x);return}
    const s=await S.getDoc(ref(me)),d=s.data()||{};b.append(el('h3',null,tr('prof')),img(d.photo,72));
    const nm=document.createElement('input');nm.value=d.name||'';nm.style.cssText='width:100%;margin:8px 0;padding:8px;border-radius:8px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:inherit';
    const ph=document.createElement('input');ph.type='file';ph.accept='image/*';
@@ -342,11 +369,18 @@ if(FIREBASE_CONFIG){try{
      if(f){const im=await createImageBitmap(f),c=document.createElement('canvas');c.width=c.height=96;c.getContext('2d').drawImage(im,0,0,96,96);p=c.toDataURL('image/jpeg',.8)}
      await S.updateDoc(ref(me),{name:nm.value.trim()||d.name,photo:p});tab('prof')}catch(e){}};
    b.append(nm,ph,sv,el('p','lb',me.email||''),el('p','lb','ID: '+me.uid),el('p','lb',tr('createdl')+': '+fmt(d.created)),el('p','lb',tr('lastl')+': '+fmt(d.last)),el('p','lb',tr('tests')+': '+(d.tests||0)+' · '+tr('best')+': '+(d.best||0)+' dB'));
-   const o=el('button','cta2',tr('signout'));o.onclick=async()=>{await A.signOut(au);tab('prof')};b.append(o)},
+   const o=el('button','cta2',tr('signout'));o.onclick=async()=>{await A.signOut(au);closeSheet()};b.append(o)},
   async board(b,f='best'){b.append(el('h3',null,tr('lb')));const bar=el('div','ba');
    [['best','board_b'],['tests','board_t']].forEach(([k,t])=>{const x=el('button',k===f?'g':'',tr(t));x.onclick=()=>{b.innerHTML='';window.FB.board(b,k)};bar.append(x)});b.append(bar);
    try{const q=await S.getDocs(S.query(S.collection(db,'users'),S.orderBy(f,'desc'),S.limit(20)));let i=0;
-    q.forEach(s=>{const d=s.data(),r=el('div','def');r.style.gridTemplateColumns='28px 40px 1fr';r.append(el('b',null,++i),img(d.photo,36));const w=el('div');w.append(el('b',null,d.name||'User'),el('span','d',(d.tests||0)+' · '+(d.best||0)+' dB'));r.append(w);b.append(r)})}catch(e){b.append(el('p',null,tr('needfb')))}}
+    q.forEach(s=>{const d=s.data(),r=el('div','def');r.style.gridTemplateColumns='28px 40px 1fr';r.append(el('b',null,++i),img(d.photo,36));const w=el('div');w.append(el('b',null,d.name||'User'),el('span','d',(d.tests||0)+' · '+(d.best||0)+' dB'));r.append(w);b.append(r)})}catch(e){b.append(el('p',null,tr('needfb')))}},
+  async admin(b){b.append(el('h3',null,L('لوحة المشرف','Admin panel')));if(!isAdmin())return;
+   try{const q=await S.getDocs(S.query(S.collection(db,'submissions'),S.orderBy('ts','desc'),S.limit(50)));localStorage.setItem('pv_seen',String(Date.now()));const bd=document.querySelector('#tadm span');if(bd)bd.textContent=tr('adm');
+    if(q.empty)b.append(el('p',null,L('لا توجد رسائل بعد.','Nothing yet.')));
+    q.forEach(s=>{const d=s.data(),c=el('div','def');c.style.display='block';
+     c.append(el('b',null,(d.name||d.email||d.uid||'?')+' '+(d.type==='feedback'?'💬':'🎙️')),el('span','d',fmt(d.ts)+' | '+[d.noise,d.algo,'SNR '+d.rsb,'M='+d.M,d.room,d.best?'best '+d.best:''].filter(Boolean).join(' · ')));
+     if(d.pick)c.append(el('div',null,L('الأفضل في رأيه: ','His pick: ')+d.pick));if(d.comment)c.append(el('div',null,'“'+d.comment+'”'));
+     if(d.audio){const p=el('button','cta2','▶');p.onclick=()=>new Audio('data:audio/wav;base64,'+d.audio).play();c.append(p)}b.append(c)})}catch(e){b.append(el('p',null,tr('needfb')))}}
  };
 }catch(e){}}
 </script></body></html>
