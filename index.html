@@ -135,9 +135,16 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-grad
 const APP_NAME='PureVoice';              /* change the app name here */
 const ADMIN_INSTAGRAM='jaykob_dn';          /* admin Instagram username */
 /* paste your Firebase web config object here to enable Google sign-in, profiles and the leaderboard */
-const FIREBASE_CONFIG=null;
+const FIREBASE_CONFIG={
+ apiKey:'AIzaSyCOBMNUTgaRDMYs7NLJY3f9gm9V9aCQEA8',
+ authDomain:'pure-voice-4bdd6.firebaseapp.com',
+ projectId:'pure-voice-4bdd6',
+ storageBucket:'pure-voice-4bdd6.firebasestorage.app',
+ messagingSenderId:'295991304660',
+ appId:'1:295991304660:web:5a2326cb58aad87b787641'
+};
 /* the admin's Google email: only this account sees the admin tab (also enforce it in the Firestore rules) */
-const ADMIN_EMAIL='';
+const ADMIN_EMAIL='jaykobdn@gmail.com';
 /* the admin's WhatsApp number in international format without + or 00 (Algeria: 213 then the number without the leading 0); the feedback form opens a WhatsApp message to it when no Firebase or Sheet is configured */
 const ADMIN_WHATSAPP='';
 const LOG_URL='';                           /* Google Apps Script URL for the usage archive */
@@ -353,14 +360,14 @@ if(FIREBASE_CONFIG){try{
  function openAccount(){if(document.getElementById('acct'))return;const ov=el('div','gate'),box=el('div');ov.id='acct';ov.append(box);
   box.append(el('h2',null,L('افتح حسابك','Open your account')),el('p',null,L('سجّل الدخول للمتابعة','Sign in to continue')));
   const err=el('p','toast',''),go=p=>async()=>{try{await A.signInWithPopup(au,p())}catch(e){err.textContent=e.code||'error'}};
-  const g=el('button','cta2',L('الدخول بـ Google','Continue with Google')),f=el('button','cta2',L('الدخول بـ Facebook','Continue with Facebook'));
-  g.onclick=go(()=>new A.GoogleAuthProvider());f.onclick=go(()=>new A.FacebookAuthProvider());
+  const g=el('button','cta2',L('الدخول بـ Google','Continue with Google'));
+  g.onclick=go(()=>new A.GoogleAuthProvider());
   const nm=inp(L('الاسم','Name')),em=inp('Email','email'),pw=inp(L('كلمة السر (6 أحرف فأكثر)','Password (6+ characters)'),'password');
   const cr=el('button','cta2',L('إنشاء حساب','Create account')),si=el('button','chip',L('لدي حساب: دخول','I have an account: sign in'));si.style.cssText='width:100%;margin-top:6px';
   cr.onclick=async()=>{try{const c=await A.createUserWithEmailAndPassword(au,em.value.trim(),pw.value);if(nm.value.trim())await A.updateProfile(c.user,{displayName:nm.value.trim()})}catch(e){err.textContent=e.code||'error'}};
   si.onclick=async()=>{try{await A.signInWithEmailAndPassword(au,em.value.trim(),pw.value)}catch(e){err.textContent=e.code||'error'}};
   const pv=document.createElement('a');pv.href='privacy.html';pv.textContent=L('بمتابعتك توافق على سياسة الخصوصية (تسجيلاتك ونتائجك تُحفظ لأغراض البحث)','By continuing you accept the privacy policy (your recordings and results are saved for research)');pv.style.cssText='display:block;margin-top:12px;font-size:.8rem;color:var(--mut)';
-  box.append(g,f,nm,em,pw,cr,si,err,pv);document.body.append(ov)}
+  box.append(g,nm,em,pw,cr,si,err,pv);document.body.append(ov)}
  async function badge(){try{const q=await S.getDocs(S.query(S.collection(db,'submissions'),S.orderBy('ts','desc'),S.limit(50)));const seen=+localStorage.getItem('pv_seen')||0;let n=0;q.forEach(d=>{const t=d.data().ts;if(t&&t.toMillis&&t.toMillis()>seen)n++});const b=document.querySelector('#tadm span');if(b)b.textContent=n?'('+n+')':tr('adm')}catch(e){}}
  A.onAuthStateChanged(au,async u=>{me=u;const ac=document.getElementById('acct');
   if(u){if(ac)ac.remove();try{const s=await S.getDoc(ref(u));if(s.exists())await S.updateDoc(ref(u),{last:S.serverTimestamp()});
