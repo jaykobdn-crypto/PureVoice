@@ -131,11 +131,12 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-grad
 <nav class="tabs"><button data-t="home">🎙️<span data-k="home"></span></button><button data-t="lb">🏆<span data-k="lb"></span></button><button data-t="rooms">🎧<span data-k="rooms"></span></button><button data-t="prof">👤<span data-k="prof"></span></button><button data-t="adm" id="tadm" hidden>👑<span data-k="adm"></span></button></nav>
 <div class="ov" id="ov" hidden><div class="sheet" id="sheet"><button class="ib x" id="xx" aria-label="close">✕</button><div id="sb"></div></div></div>
 
+<script src="firebase-config.js"></script>
 <script>
 const APP_NAME='PureVoice';              /* change the app name here */
 const ADMIN_INSTAGRAM='jaykob_dn';          /* admin Instagram username */
 /* paste your Firebase web config object here to enable Google sign-in, profiles and the leaderboard */
-const FIREBASE_CONFIG=null;
+const FIREBASE_CONFIG=(window.PV_CONFIG&&!String(window.PV_CONFIG.apiKey).startsWith('PASTE'))?window.PV_CONFIG:null;
 /* the admin's Google email: only this account sees the admin tab (also enforce it in the Firestore rules) */
 const ADMIN_EMAIL='';
 /* set to true only after you create the Facebook app and enable Facebook sign-in in Firebase */
@@ -351,7 +352,7 @@ if(FIREBASE_CONFIG){try{
  const [{initializeApp},A,S]=await Promise.all([import(B+'firebase-app.js'),import(B+'firebase-auth.js'),import(B+'firebase-firestore.js')]);
  const au=A.getAuth(initializeApp(FIREBASE_CONFIG)),db=S.getFirestore(au.app);let me=null;
  const ref=u=>S.doc(db,'users',u.uid),fmt=t=>t&&t.toDate?t.toDate().toLocaleString(lang==='ar'?'ar-DZ':'en-GB'):'';
- const isAdmin=()=>!!me&&!!ADMIN_EMAIL&&me.email===ADMIN_EMAIL,tadm=()=>document.getElementById('tadm');
+ let ADM=false;const isAdmin=()=>ADM,tadm=()=>document.getElementById('tadm');
  const inp=(ph,type)=>{const i=document.createElement('input');i.placeholder=ph;i.type=type||'text';i.style.cssText='width:100%;margin:6px 0;padding:11px;border-radius:10px;border:1px solid var(--line);background:var(--bg);color:var(--fg);font:inherit';return i};
  function openAccount(){if(document.getElementById('acct'))return;const ov=el('div','gate'),box=el('div');ov.id='acct';ov.append(box);
   box.append(el('h2',null,L('افتح حسابك','Open your account')),el('p',null,L('سجّل الدخول للمتابعة','Sign in to continue')));
@@ -368,8 +369,8 @@ if(FIREBASE_CONFIG){try{
  A.onAuthStateChanged(au,async u=>{me=u;const ac=document.getElementById('acct');
   if(u){if(ac)ac.remove();try{const s=await S.getDoc(ref(u));if(s.exists())await S.updateDoc(ref(u),{last:S.serverTimestamp()});
     else await S.setDoc(ref(u),{uid:u.uid,name:u.displayName||(u.email||'').split('@')[0]||'User',photo:u.photoURL||'',created:S.serverTimestamp(),last:S.serverTimestamp(),tests:0,best:0})}catch(e){}
-   tadm().hidden=!isAdmin();if(isAdmin())badge()}
-  else{tadm().hidden=true;if(hasConsent())openAccount()}});
+   try{await S.getDocs(S.query(S.collection(db,'submissions'),S.limit(1)));ADM=true}catch(e){ADM=false}tadm().hidden=!isAdmin();if(isAdmin())badge()}
+  else{ADM=false;tadm().hidden=true;if(hasConsent())openAccount()}});
  window.pvEnsureLogin=()=>{if(!me)openAccount()};
  window.pvWho=()=>me?{uid:me.uid,name:me.displayName||'',email:me.email||''}:null;
  window.pvAfterRun=async R=>{if(!me)return;try{const g=+(R.alg[R.best].snr-R.rsb).toFixed(1),s=await S.getDoc(ref(me));await S.updateDoc(ref(me),{tests:S.increment(1),best:Math.max((s.data()||{}).best||0,g)})}catch(e){}};
