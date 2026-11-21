@@ -124,7 +124,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-grad
 </div>
 
 <div class="rail">
- <button class="ib" id="msg" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M12 2C6.5 2 2 6.2 2 11.4c0 2.9 1.4 5.5 3.6 7.2V22l3.3-1.8c.9.2 1.9.4 3.1.4 5.5 0 10-4.2 10-9.4S17.5 2 12 2zm1 12.6l-2.5-2.7-4.9 2.7 5.4-5.7 2.6 2.7 4.8-2.7-5.4 5.7z"/></svg></button>
+ <button class="ib" id="msg" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm5.25-3.25a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z"/></svg></button>
  <button class="ib" id="sh" aria-label="share" hidden>⤴</button>
 </div>
 <div class="gate" id="gate" hidden><div><div class="gimg"></div><div class="sym" aria-hidden="true">📡 🛰️ 📶 🗼 📻 🎧</div><h2 id="gt"></h2><p id="gd"></p><ul id="gl" style="margin:0 0 10px;padding-inline-start:1.2em;line-height:1.9"></ul><p class="lb" id="gp"></p><button class="cta" id="ga" style="width:100%"></button></div></div>
@@ -138,6 +138,8 @@ const ADMIN_INSTAGRAM='jaykob_dn';          /* admin Instagram username */
 const FIREBASE_CONFIG=null;
 /* the admin's Google email: only this account sees the admin tab (also enforce it in the Firestore rules) */
 const ADMIN_EMAIL='';
+/* the admin's WhatsApp number in international format without + or 00 (Algeria: 213 then the number without the leading 0); the feedback form opens a WhatsApp message to it when no Firebase or Sheet is configured */
+const ADMIN_WHATSAPP='';
 const LOG_URL='';                           /* Google Apps Script URL for the usage archive */
 const $=id=>document.getElementById(id),FS=8000;
 let lang='ar',src='',speech=null,AC=null,R=null,srcNode=null,mr=null,chunks=[],tick=null,nz='white',al='VFPNLMS';
@@ -290,7 +292,10 @@ async function archive(type,extra){if((!LOG_URL&&!window.pvArchive)||!hasConsent
   if(type==='run'&&speech)o.audio=await audio64();
   if(window.pvArchive)window.pvArchive(o);if(LOG_URL)fetch(LOG_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'text/plain'},body:JSON.stringify(o)});return true}catch(e){return false}}
 $('fs').onclick=async()=>{const c=$('ft').value.trim(),p=$('fa').value;if(!c&&!p){$('fm').textContent=tr('fneed');return}
- if(!LOG_URL&&!window.pvArchive){$('fm').textContent=tr('fnolog');return}
+ if(!LOG_URL&&!window.pvArchive){if(!ADMIN_WHATSAPP){$('fm').textContent=tr('fnolog');return}
+  const g=R?Object.keys(R.alg).map(k=>k+': '+(R.alg[k].snr-R.rsb).toFixed(1)+' dB').join('\n'):'';
+  const body=['Best algorithm (user pick): '+p,'Comment: '+c,'','Settings: noise='+nz+', SNR in='+$('rsb').value+' dB, M='+$('M').value+', room='+$('room').value,'Best measured: '+(R?R.best:'-'),g].join('\n');
+  window.open('https://wa.me/'+ADMIN_WHATSAPP+'?text='+encodeURIComponent('PureVoice\n'+body),'_blank','noopener');$('ft').value='';$('fm').textContent=tr('fok');return}
  await archive('feedback',{pick:p,comment:c});$('ft').value='';$('fm').textContent=tr('fok')};
 /* ---- voice rooms: small peer-to-peer groups (experimental) ---- */
 const L=(a,e)=>lang==='ar'?a:e;let PEER=null,LOCAL=null;
