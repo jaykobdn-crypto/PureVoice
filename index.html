@@ -88,10 +88,11 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-grad
 .gate h2{font-size:2rem;margin:4px 0 10px;background:linear-gradient(90deg,var(--a1),var(--a2),var(--a3));-webkit-background-clip:text;background-clip:text;color:transparent}
 .gate p{color:var(--fg);opacity:.88;line-height:1.9;font-size:1.05rem}
 .gate .cta{margin-top:14px;font-size:1.2rem;padding:16px}
+.ib.dic{background:linear-gradient(135deg,var(--a1),var(--a2));box-shadow:0 8px 20px rgba(123,63,242,.45)!important}
 </style></head><body>
 <svg width="0" height="0" style="position:absolute"><defs><linearGradient id="ig" x1="0" y1="1" x2="1" y2="0"><stop offset="0" stop-color="#f58529"/><stop offset=".5" stop-color="#dd2a7b"/><stop offset="1" stop-color="#8134af"/></linearGradient></defs></svg>
 <div class="app">
- <div class="top"><span class="brand" id="brand"></span><span><button class="ib" id="inst" aria-label="install" hidden>📲</button> <button class="ib" id="th" aria-label="theme">🌓</button> <button class="ib" id="gl" aria-label="glossary">📖</button> <button class="ib" id="lg" aria-label="language">EN</button></span></div>
+ <div class="top"><span class="brand" id="brand"></span><span><button class="ib" id="inst" aria-label="install" hidden>📲</button> <button class="ib" id="th" aria-label="theme">🌓</button> <button class="ib" id="lg" aria-label="language">EN</button></span></div>
 
  <p class="lb" style="justify-content:center;text-align:center;direction:ltr;font-style:italic">Etude et analyse d’un algorithme bi-capture à pas variable pour le rehaussement de signal parole dans les systèmes mains libres</p>
  <div class="sym" aria-hidden="true">📡 🛰️ 📶 🗼 📻 🎧 🎙️</div>
@@ -124,6 +125,7 @@ body::before{content:"";position:fixed;inset:0;z-index:-1;background:radial-grad
 </div>
 
 <div class="rail">
+ <button class="ib dic" id="dic" aria-label="dictionary" title="قاموس / Dictionary"><svg viewBox="0 0 24 24" style="fill:#fff"><path d="M6 2h11a2 2 0 0 1 2 2v16a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2zm0 2v16h11V4H6zm1.5 2.5h8v1.8h-8V6.5zm0 3.5h8v1.8h-8V10zm0 3.5h5v1.8h-5v-1.8z"/><text x="13.2" y="19.2" font-size="5.2" font-weight="800" fill="#7b3ff2" style="fill:#7b3ff2">Aa</text></svg></button>
  <button class="ib" id="msg" aria-label="Instagram"><svg viewBox="0 0 24 24"><path d="M7.5 2h9A5.5 5.5 0 0 1 22 7.5v9a5.5 5.5 0 0 1-5.5 5.5h-9A5.5 5.5 0 0 1 2 16.5v-9A5.5 5.5 0 0 1 7.5 2zm0 2A3.5 3.5 0 0 0 4 7.5v9A3.5 3.5 0 0 0 7.5 20h9a3.5 3.5 0 0 0 3.5-3.5v-9A3.5 3.5 0 0 0 16.5 4h-9zM12 7a5 5 0 1 1 0 10 5 5 0 0 1 0-10zm0 2a3 3 0 1 0 0 6 3 3 0 0 0 0-6zm5.25-3.25a1.25 1.25 0 1 1 0 2.5 1.25 1.25 0 0 1 0-2.5z"/></svg></button>
  <button class="ib" id="sh" aria-label="share" hidden>⤴</button>
 </div>
@@ -190,7 +192,7 @@ function openSheet(build,scrollId){$('sb').innerHTML='';build($('sb'));$('ov').h
 const closeSheet=()=>$('ov').hidden=true;$('xx').onclick=closeSheet;$('ov').onclick=e=>{if(e.target===$('ov'))closeSheet()};
 function glossary(g){openSheet(b=>{['noise','alg','term'].forEach(k=>{const h=el('h3',null,tr('g_'+k));h.id='g_'+k;b.append(h);
  G.filter(x=>x[0]===k).forEach(x=>{const d=el('div','def'),ic=el('span',null,x[1]),w=el('div');w.append(el('b',null,lang==='ar'?x[2]:x[3]),el('span','d',lang==='ar'?x[4]:x[5]));d.append(ic,w);b.append(d)})})},g?'g_'+g:null)}
-$('gl').onclick=()=>glossary();document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>glossary(b.dataset.g));
+$('dic').onclick=()=>glossary();document.querySelectorAll('[data-g]').forEach(b=>b.onclick=()=>glossary(b.dataset.g));
 $('msg').onclick=()=>{openSheet(b=>{b.append(el('h3',null,tr('igt')));
  let fl=false;try{fl=!!localStorage.getItem('naqaa_f')}catch(e){}const m=el('button','cta2',tr('igm')),f=el('button','cta2',tr('igf'));m.disabled=!fl;if(!fl)m.textContent='🔒 '+tr('igm');
  f.onclick=()=>{try{localStorage.setItem('naqaa_f','1')}catch(e){}m.disabled=false;m.textContent=tr('igm');window.open('https://www.instagram.com/'+ADMIN_INSTAGRAM,'_blank','noopener')};
