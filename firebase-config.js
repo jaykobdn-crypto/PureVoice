@@ -1,10 +1,9 @@
-// Paste your Firebase web config values here (Firebase console > Project settings > Your apps > Web app).
-// Keep the quotes. Save the file as firebase-config.js in the same folder as index.html.
+// PureVoice - Firebase web config
 window.PV_CONFIG={
-  apiKey:"PASTE_HERE",
-  authDomain:"PASTE_HERE",
-  projectId:"PASTE_HERE",
-  storageBucket:"PASTE_HERE",
-  messagingSenderId:"PASTE_HERE",
-  appId:"PASTE_HERE"
+  apiKey:"AIzaSyCOBMNUTgaRDMYs7NLJY3f9gm9V9aCQEA8",
+  authDomain:"pure-voice-4bdd6.firebaseapp.com",
+  projectId:"pure-voice-4bdd6",
+  storageBucket:"pure-voice-4bdd6.firebasestorage.app",
+  messagingSenderId:"295991304660",
+  appId:"1:295991304660:web:5a2326cb58aad87b787641"
 };
